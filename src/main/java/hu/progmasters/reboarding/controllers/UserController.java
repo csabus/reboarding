@@ -23,6 +23,7 @@ public class UserController {
     @GetMapping()
     @RequestMapping("{id}")
     public User get(@PathVariable Long id) {
+
         return userRepository.getOne(id);
     }
 
@@ -30,6 +31,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody final User user) {
         return userRepository.saveAndFlush(user);
+
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
