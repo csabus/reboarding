@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    @Query("SELECT r FROM hu.progmasters.reboarding.models.Reservation r where r.user_id = :id and r.date = :date")
+    @Query("SELECT r FROM hu.progmasters.reboarding.models.Reservation r where r.exitTime is null and r.user_id = :id and r.date = :date")
     Optional<Reservation> findByDateAndUserId(@Param("id") Long id, @Param("date") LocalDate date);
 
     @Procedure(name = "Registration.getState")

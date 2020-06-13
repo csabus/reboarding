@@ -1,5 +1,6 @@
 package hu.progmasters.reboarding.controllers;
 
+import hu.progmasters.reboarding.ReservationStatus;
 import hu.progmasters.reboarding.models.Reservation;
 import hu.progmasters.reboarding.repositories.ReservationRepository;
 import hu.progmasters.reboarding.repositories.UserRepository;
@@ -22,16 +23,16 @@ public class RegisterController {
     private ReservationRepository reservationRepository;
 
     @PostMapping
-    public Reservation create(@RequestBody final Reservation reservation) {
+    public ReservationStatus create(@RequestBody final Reservation reservation) {
         if (userRepository.existsById(reservation.getUser_id())) {
             Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(reservation.getUser_id(), reservation.getDate());
             if (existingReservation.isEmpty()) {
                 Reservation newReservation = new Reservation();
                 BeanUtils.copyProperties(reservation, newReservation, "reservation_id");
-                return reservationRepository.saveAndFlush(newReservation);
-            } else {
-                return reservationRepository.getOne(existingReservation.get().getReservation_id());
+                reservationRepository.saveAndFlush(newReservation);
             }
+            int index = reservationRepository.getUserReservationState(reservation.getUser_id(), reservation.getDate());
+            return new ReservationStatus(reservation.getDate(), index);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }

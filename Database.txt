@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION "public".GET_RESERVATION_INDEX (u_id NUMERIC, day_dat
 	BEGIN
 		SELECT into dailyCapacity capacity FROM capacity WHERE "day" = day_date;
 		SELECT INTO dailyIndex sub.n FROM
-			(SELECT row_number() OVER (ORDER BY r.reservation_id) n, * FROM reservations r WHERE r.reservation_date = day_date) sub
+			(SELECT row_number() OVER (ORDER BY r.reservation_id) n, * FROM reservations r WHERE r.reservation_date = day_date AND r.exit_time IS NULL) sub
 			WHERE sub.user_id = u_id;
 		IF dailyIndex > dailyCapacity THEN
 			RETURN 0 - dailyIndex + dailyCapacity;
