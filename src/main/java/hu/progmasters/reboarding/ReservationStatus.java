@@ -1,12 +1,22 @@
 package hu.progmasters.reboarding;
 
+import java.time.LocalDate;
+
 public class ReservationStatus {
     private Status status;
-    private long number;
+    private int index;
+    private LocalDate date;
 
-    public ReservationStatus(Status status, long number) {
-        this.status = status;
-        this.number = number;
+    public ReservationStatus(LocalDate date, int index) {
+        this.date = date;
+        this.index = index;
+        if (index < 0) {
+            this.status = Status.WAITING;
+        } else if (index > 0) {
+            this.status = Status.ACCEPTED;
+        } else {
+            this.status = Status.NOT_REGISTERED;
+        }
     }
 
     public Status getStatus() {
@@ -17,11 +27,19 @@ public class ReservationStatus {
         this.status = status;
     }
 
-    public long getNumber() {
-        return number;
+    public int getIndex() {
+        return index >= 0 ? index : -index;
     }
 
-    public void setNumber(long number) {
-        this.number = number;
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

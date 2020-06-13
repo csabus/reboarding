@@ -6,6 +6,11 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity(name = "reservations")
+@NamedStoredProcedureQuery(name = "Registration.getSTate",
+        procedureName = "GET_RESERVATION_INDEX", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "u_id", type = Long.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "day_date", type = LocalDate.class),
+        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "state", type = Integer.class)})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Reservation {
     @Id

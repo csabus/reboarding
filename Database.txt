@@ -1,0 +1,22 @@
+CREATE OR REPLACE FUNCTION "public".GET_RESERVATION_INDEX (u_id NUMERIC, day_date DATE)
+  RETURNS int4
+  AS $BODY$
+	DECLARE
+		ret RECORD;
+		dailyCapacity int4 := 0;
+		dailyIndex int4 := 0;
+	BEGIN
+		SELECT into dailyCapacity capacity FROM capacity WHERE "day" = day_date;
+		SELECT INTO dailyIndex sub.n FROM
+			(SELECT row_number() OVER (ORDER BY r.reservation_id) n, * FROM reservations r WHERE r.reservation_date = day_date) sub
+			WHERE sub.user_id = u_id;
+		IF dailyIndex > dailyCapacity THEN
+			RETURN 0 - dailyIndex + dailyCapacity;
+		ELSIF dailyIndex <= dailyCapacity THEN
+			RETURN dailyIndex;
+		ELSE
+			RETURN 0;
+		END IF;
+	END
+$BODY$
+  LANGUAGE 'plpgsql';
