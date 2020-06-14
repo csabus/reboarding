@@ -13,7 +13,8 @@ public class Capacity {
     @Id
     @Column(name = "day", columnDefinition = "DATE")
     private LocalDate date;
-    private Long capacity;
+    @Column(name = "capacity")
+    private Long dailyCapacity;
 
     public Capacity() {
     }
@@ -26,11 +27,11 @@ public class Capacity {
         this.date = date;
     }
 
-    public Long getCapacity() {
-        return capacity;
+    public Long getDailyCapacity() {
+        return dailyCapacity;
     }
 
-    public void setCapacity(Long capacity) {
-        this.capacity = capacity;
+    public void setDailyCapacity(Long dailyCapacity) {
+        this.dailyCapacity = dailyCapacity;
     }
 }

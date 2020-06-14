@@ -16,8 +16,10 @@ import java.time.LocalDateTime;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reservation_id;
-    private Long user_id;
+    @Column(name = "reservation_id")
+    private Long reservationId;
+    @Column(name = "user_id")
+    private Long userId;
     @Column(name = "reservation_date", columnDefinition = "DATE")
     private LocalDate date;
     @Column(name = "enter_time", columnDefinition = "TIMESTAMP")
@@ -28,20 +30,20 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Long getReservation_id() {
-        return reservation_id;
+    public Long getReservationId() {
+        return reservationId;
     }
 
-    public void setReservation_id(Long reservation_id) {
-        this.reservation_id = reservation_id;
+    public void setReservationId(Long reservationId) {
+        this.reservationId = reservationId;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public LocalDate getDate() {

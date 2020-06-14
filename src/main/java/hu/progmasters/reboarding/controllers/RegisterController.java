@@ -28,21 +28,21 @@ public class RegisterController {
 
     @PostMapping
     public ReservationStatus create(@RequestBody final Reservation reservation) {
-        if (userRepository.existsById(reservation.getUser_id())) {
-            Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(reservation.getUser_id(), reservation.getDate());
+        if (userRepository.existsById(reservation.getUserId())) {
+            Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(reservation.getUserId(), reservation.getDate());
             boolean capacitySet = true;
             if (existingReservation.isEmpty()) {
                 Capacity capacity = capacityRepository.findByDate(reservation.getDate());
                 if (capacity != null) {
                     Reservation newReservation = new Reservation();
-                    BeanUtils.copyProperties(reservation, newReservation, "reservation_id");
+                    BeanUtils.copyProperties(reservation, newReservation, "reservationId");
                     reservationRepository.saveAndFlush(newReservation);
                 } else {
                     capacitySet = false;
                 }
             }
             if (capacitySet) {
-                int index = reservationRepository.getUserReservationState(reservation.getUser_id(), reservation.getDate());
+                int index = reservationRepository.getUserReservationState(reservation.getUserId(), reservation.getDate());
                 return new ReservationStatus(reservation.getDate(), index);
             } else {
                 return new ReservationStatus(null, 0);

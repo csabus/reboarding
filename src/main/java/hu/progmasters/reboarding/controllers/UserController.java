@@ -40,7 +40,7 @@ public class UserController {
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public User update(@PathVariable Long id, @RequestBody User user) {
         User existingUser = userRepository.getOne(id);
-        BeanUtils.copyProperties(user, existingUser, "user_id");
+        BeanUtils.copyProperties(user, existingUser, "userId");
         return userRepository.saveAndFlush(existingUser);
     }
 

@@ -29,9 +29,9 @@ public class CapacityController {
 
     @PostMapping
     public Capacity create(@RequestBody final Capacity capacity) {
-        long c = Math.max(capacity.getCapacity(), CapacityRepository.MIN_CAPACITY);
+        long c = Math.max(capacity.getDailyCapacity(), CapacityRepository.MIN_CAPACITY);
         c = Math.min(c, CapacityRepository.MAX_CAPACITY);
-        capacity.setCapacity(c);
+        capacity.setDailyCapacity(c);
         return capacityRepository.saveAndFlush(capacity);
     }
 
@@ -39,9 +39,9 @@ public class CapacityController {
     public Capacity update(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                            @RequestBody Capacity capacity) {
         Capacity existingCapacity = capacityRepository.findByDate(date);
-        long c = Math.max(capacity.getCapacity(), CapacityRepository.MIN_CAPACITY);
+        long c = Math.max(capacity.getDailyCapacity(), CapacityRepository.MIN_CAPACITY);
         c = Math.min(c, CapacityRepository.MAX_CAPACITY);
-        capacity.setCapacity(c);
+        capacity.setDailyCapacity(c);
         BeanUtils.copyProperties(capacity, existingCapacity, "date");
         return capacityRepository.saveAndFlush(existingCapacity);
     }
