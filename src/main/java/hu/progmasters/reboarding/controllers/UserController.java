@@ -44,7 +44,7 @@ public class UserController {
     public User update(@PathVariable Long id, @RequestBody User user) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
-            BeanUtils.copyProperties(user, existingUser, "userId");
+            BeanUtils.copyProperties(user, existingUser.get(), "userId");
             return userRepository.saveAndFlush(existingUser.get());
         } else {
             throw new UserNotFoundException(id);
