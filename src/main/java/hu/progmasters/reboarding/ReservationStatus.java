@@ -17,6 +17,9 @@ public class ReservationStatus {
         } else {
             this.status = Status.NOT_REGISTERED;
         }
+        if (date == null) {
+            this.status = Status.MISSING_CAPACITY;
+        }
     }
 
     public Status getStatus() {

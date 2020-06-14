@@ -1,7 +1,9 @@
 package hu.progmasters.reboarding.controllers;
 
 import hu.progmasters.reboarding.ReservationStatus;
+import hu.progmasters.reboarding.models.Capacity;
 import hu.progmasters.reboarding.models.Reservation;
+import hu.progmasters.reboarding.repositories.CapacityRepository;
 import hu.progmasters.reboarding.repositories.ReservationRepository;
 import hu.progmasters.reboarding.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -21,18 +23,30 @@ public class RegisterController {
     private UserRepository userRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private CapacityRepository capacityRepository;
 
     @PostMapping
     public ReservationStatus create(@RequestBody final Reservation reservation) {
         if (userRepository.existsById(reservation.getUser_id())) {
             Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(reservation.getUser_id(), reservation.getDate());
+            boolean capacitySet = true;
             if (existingReservation.isEmpty()) {
-                Reservation newReservation = new Reservation();
-                BeanUtils.copyProperties(reservation, newReservation, "reservation_id");
-                reservationRepository.saveAndFlush(newReservation);
+                Capacity capacity = capacityRepository.findByDate(reservation.getDate());
+                if (capacity != null) {
+                    Reservation newReservation = new Reservation();
+                    BeanUtils.copyProperties(reservation, newReservation, "reservation_id");
+                    reservationRepository.saveAndFlush(newReservation);
+                } else {
+                    capacitySet = false;
+                }
             }
-            int index = reservationRepository.getUserReservationState(reservation.getUser_id(), reservation.getDate());
-            return new ReservationStatus(reservation.getDate(), index);
+            if (capacitySet) {
+                int index = reservationRepository.getUserReservationState(reservation.getUser_id(), reservation.getDate());
+                return new ReservationStatus(reservation.getDate(), index);
+            } else {
+                return new ReservationStatus(null, 0);
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
