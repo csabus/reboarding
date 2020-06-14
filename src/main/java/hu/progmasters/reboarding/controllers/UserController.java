@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -41,9 +42,13 @@ public class UserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public User update(@PathVariable Long id, @RequestBody User user) {
-        User existingUser = userRepository.getOne(id);
-        BeanUtils.copyProperties(user, existingUser, "userId");
-        return userRepository.saveAndFlush(existingUser);
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            BeanUtils.copyProperties(user, existingUser, "userId");
+            return userRepository.saveAndFlush(existingUser.get());
+        } else {
+            throw new UserNotFoundException(id);
+        }
     }
 
 }
