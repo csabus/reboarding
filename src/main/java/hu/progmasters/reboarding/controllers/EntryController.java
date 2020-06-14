@@ -1,7 +1,10 @@
 package hu.progmasters.reboarding.controllers;
 
+import hu.progmasters.reboarding.excpetion.ReservationNotFoundException;
+import hu.progmasters.reboarding.excpetion.UserNotFoundException;
 import hu.progmasters.reboarding.models.Reservation;
 import hu.progmasters.reboarding.repositories.ReservationRepository;
+import hu.progmasters.reboarding.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,18 +21,25 @@ import java.util.Optional;
 public class EntryController {
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Reservation update(@PathVariable Long id) {
         LocalDate today = LocalDate.now();
         Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(id, today);
-        if (reservation.isPresent()) {
-            reservation.get().setEnterTime(LocalDateTime.now());
-            Reservation existingReservation = reservationRepository.getOne(reservation.get().getReservationId());
-            BeanUtils.copyProperties(reservation, existingReservation);
-            return reservationRepository.saveAndFlush(existingReservation);
+        if (userRepository.findById(id).isPresent()) {
+            if (reservation.isPresent()) {
+                reservation.get().setEnterTime(LocalDateTime.now());
+                Reservation existingReservation = reservationRepository.getOne(reservation.get().getReservationId());
+                BeanUtils.copyProperties(reservation, existingReservation);
+                return reservationRepository.saveAndFlush(existingReservation);
+            } else {
+                throw new ReservationNotFoundException(id);
+            }
+        } else {
+            throw new UserNotFoundException(id);
         }
-        return null;
     }
 
 }

@@ -1,5 +1,6 @@
 package hu.progmasters.reboarding.controllers;
 
+import hu.progmasters.reboarding.excpetion.UserNotFoundException;
 import hu.progmasters.reboarding.models.User;
 import hu.progmasters.reboarding.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +24,7 @@ public class UserController {
     @GetMapping()
     @RequestMapping("{id}")
     public User get(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @PostMapping
@@ -32,6 +33,7 @@ public class UserController {
         return userRepository.saveAndFlush(user);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) {
         userRepository.deleteById(id);

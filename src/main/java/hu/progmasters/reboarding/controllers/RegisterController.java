@@ -1,6 +1,8 @@
 package hu.progmasters.reboarding.controllers;
 
 import hu.progmasters.reboarding.ReservationStatus;
+import hu.progmasters.reboarding.excpetion.CapacityNotSetException;
+import hu.progmasters.reboarding.excpetion.UserNotFoundException;
 import hu.progmasters.reboarding.models.Capacity;
 import hu.progmasters.reboarding.models.Reservation;
 import hu.progmasters.reboarding.repositories.CapacityRepository;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -27,32 +28,29 @@ public class RegisterController {
     private CapacityRepository capacityRepository;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ReservationStatus create(@RequestBody final Reservation reservation) {
         if (userRepository.existsById(reservation.getUserId())) {
             Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(reservation.getUserId(), reservation.getDate());
-            boolean capacitySet = true;
             if (existingReservation.isEmpty()) {
-                Capacity capacity = capacityRepository.findByDate(reservation.getDate());
-                if (capacity != null) {
+                Optional<Capacity> capacity = capacityRepository.findByDate(reservation.getDate());
+                if (capacity.isPresent()) {
                     Reservation newReservation = new Reservation();
                     BeanUtils.copyProperties(reservation, newReservation, "reservationId");
                     reservationRepository.saveAndFlush(newReservation);
                 } else {
-                    capacitySet = false;
+                    throw new CapacityNotSetException(reservation.getDate());
                 }
             }
-            if (capacitySet) {
-                int index = reservationRepository.getUserReservationState(reservation.getUserId(), reservation.getDate());
-                return new ReservationStatus(reservation.getDate(), index);
-            } else {
-                return new ReservationStatus(null, 0);
-            }
+            int index = reservationRepository.getUserReservationState(reservation.getUserId(), reservation.getDate());
+            return new ReservationStatus(reservation.getDate(), index);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new UserNotFoundException(reservation.getUserId());
         }
     }
 
     @DeleteMapping(value = "{date}/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                        @PathVariable("id") Long userId) {
         Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(userId, date);
