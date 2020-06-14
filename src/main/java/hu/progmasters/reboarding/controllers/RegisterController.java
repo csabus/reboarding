@@ -2,6 +2,7 @@ package hu.progmasters.reboarding.controllers;
 
 import hu.progmasters.reboarding.ReservationStatus;
 import hu.progmasters.reboarding.excpetion.CapacityNotSetException;
+import hu.progmasters.reboarding.excpetion.ReservationNotFoundException;
 import hu.progmasters.reboarding.excpetion.UserNotFoundException;
 import hu.progmasters.reboarding.models.Capacity;
 import hu.progmasters.reboarding.models.Reservation;
@@ -53,8 +54,16 @@ public class RegisterController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                        @PathVariable("id") Long userId) {
-        Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(userId, date);
-        existingReservation.ifPresent(reservation -> reservationRepository.delete(reservation));
+        if (userRepository.findById(userId).isPresent()) {
+            Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(userId, date);
+            if (reservation.isPresent()) {
+                reservationRepository.delete(reservation.get());
+            } else {
+                throw new ReservationNotFoundException(userId);
+            }
+        } else {
+            throw new UserNotFoundException(userId);
+        }
     }
 
 }
