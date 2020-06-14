@@ -37,7 +37,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) {
-        userRepository.deleteById(id);
+        if (userRepository.findById(id).isPresent()) {
+            userRepository.deleteById(id);
+        } else {
+            throw new UserNotFoundException(id);
+        }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
