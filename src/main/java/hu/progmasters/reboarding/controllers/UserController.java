@@ -23,9 +23,9 @@ public class UserController {
     }
 
     @GetMapping()
-    @RequestMapping("{id}")
-    public User get(@PathVariable Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    @RequestMapping("{userId}")
+    public User get(@PathVariable Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     @PostMapping
@@ -35,23 +35,23 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id) {
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
+    @RequestMapping(value = "{userId}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable Long userId) {
+        if (userRepository.findById(userId).isPresent()) {
+            userRepository.deleteById(userId);
         } else {
-            throw new UserNotFoundException(id);
+            throw new UserNotFoundException(userId);
         }
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public User update(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> existingUser = userRepository.findById(id);
+    @RequestMapping(value = "{userId}", method = RequestMethod.PUT)
+    public User update(@PathVariable Long userId, @RequestBody User user) {
+        Optional<User> existingUser = userRepository.findById(userId);
         if (existingUser.isPresent()) {
             BeanUtils.copyProperties(user, existingUser.get(), "userId");
             return userRepository.saveAndFlush(existingUser.get());
         } else {
-            throw new UserNotFoundException(id);
+            throw new UserNotFoundException(userId);
         }
     }
 

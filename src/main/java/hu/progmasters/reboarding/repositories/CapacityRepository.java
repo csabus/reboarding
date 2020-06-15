@@ -12,4 +12,6 @@ public interface CapacityRepository extends JpaRepository<Capacity, Long> {
     static final int DEFAULT_CAPACITY = 250;
 
     Optional<Capacity> findByDate(LocalDate date);
+
+    Capacity getOneByDate(LocalDate date);
 }

@@ -24,21 +24,25 @@ public class ExitController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Reservation update(@PathVariable Long id) {
-        if (userRepository.findById(id).isPresent()) {
+    /**
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "{userId}", method = RequestMethod.PUT)
+    public Reservation update(@PathVariable Long userId) {
+        if (userRepository.findById(userId).isPresent()) {
             LocalDate today = LocalDate.now();
-            Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(id, today);
+            Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(userId, today);
             if (reservation.isPresent()) {
                 reservation.get().setExitTime(LocalDateTime.now());
                 Reservation existingReservation = reservationRepository.getOne(reservation.get().getReservationId());
                 BeanUtils.copyProperties(reservation, existingReservation);
                 return reservationRepository.saveAndFlush(existingReservation);
             } else {
-                throw new ReservationNotFoundException(id);
+                throw new ReservationNotFoundException(userId);
             }
         } else {
-            throw new UserNotFoundException(id);
+            throw new UserNotFoundException(userId);
         }
     }
 }

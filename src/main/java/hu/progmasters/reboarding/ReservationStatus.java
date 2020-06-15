@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public class ReservationStatus {
     private Status status;
-    private int index;
+    private long index;
     private LocalDate date;
 
-    public ReservationStatus(LocalDate date, int index) {
+    public ReservationStatus(LocalDate date, long index) {
         this.date = date;
         this.index = index;
         if (index < 0) {
@@ -30,11 +30,11 @@ public class ReservationStatus {
         this.status = status;
     }
 
-    public int getIndex() {
+    public long getIndex() {
         return index >= 0 ? index : -index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(long index) {
         this.index = index;
     }
 
