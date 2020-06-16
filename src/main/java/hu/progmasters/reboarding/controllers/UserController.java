@@ -47,6 +47,7 @@ public class UserController {
     @RequestMapping(value = "{userId}", method = RequestMethod.PUT)
     public User update(@PathVariable Long userId, @RequestBody User user) {
         Optional<User> existingUser = userRepository.findById(userId);
+
         if (existingUser.isPresent()) {
             BeanUtils.copyProperties(user, existingUser.get(), "userId");
             return userRepository.saveAndFlush(existingUser.get());

@@ -43,10 +43,12 @@ public class CapacityController {
     public Capacity update(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                            @RequestBody Capacity capacity) {
         Optional<Capacity> existingCapacity = capacityRepository.findByDate(date);
+
         if (existingCapacity.isPresent()) {
             long c = Math.max(capacity.getDailyCapacity(), CapacityRepository.MIN_CAPACITY);
             c = Math.min(c, CapacityRepository.MAX_CAPACITY);
             capacity.setDailyCapacity(c);
+
             BeanUtils.copyProperties(capacity, existingCapacity.get(), "date");
             return capacityRepository.saveAndFlush(existingCapacity.get());
         } else {

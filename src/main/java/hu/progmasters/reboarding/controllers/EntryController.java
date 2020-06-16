@@ -28,10 +28,13 @@ public class EntryController {
     public Reservation update(@PathVariable Long userId) {
         LocalDate today = LocalDate.now();
         Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(userId, today);
+
         if (userRepository.findById(userId).isPresent()) {
+
             if (reservation.isPresent()) {
                 reservation.get().setEnterTime(LocalDateTime.now());
                 Reservation existingReservation = reservationRepository.getOne(reservation.get().getReservationId());
+
                 BeanUtils.copyProperties(reservation, existingReservation);
                 return reservationRepository.saveAndFlush(existingReservation);
             } else {

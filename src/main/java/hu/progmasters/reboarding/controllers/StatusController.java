@@ -34,10 +34,12 @@ public class StatusController {
                                  @PathVariable("userId") Long userId) {
         if (userRepository.findById(userId).isPresent()) {
             Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(userId, date);
+
             if (reservation.isPresent()) {
                 List<Reservation> reservationList = reservationRepository.findAllOpenByDate(date);
-                int reservationIndex = reservationList.indexOf(reservation.get());
                 Capacity capacity = capacityRepository.getOneByDate(date);
+
+                int reservationIndex = reservationList.indexOf(reservation.get());
                 long dailyCapacity = capacity.getDailyCapacity();
                 if (reservationIndex < dailyCapacity) {
                     return new ReservationStatus(date, reservationIndex + 1);
@@ -51,6 +53,4 @@ public class StatusController {
             throw new UserNotFoundException(userId);
         }
     }
-
-
 }

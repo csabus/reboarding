@@ -41,10 +41,12 @@ public class RegisterController {
             LocalDate date = reservation.getDate();
             Long userId = reservation.getUserId();
             Optional<Capacity> capacity = capacityRepository.findByDate(reservation.getDate());
+
             if (capacity.isPresent()) {
                 long dailyCapacity = capacity.get().getDailyCapacity();
                 Optional<Reservation> existingReservation = reservationRepository.findByDateAndUserId(userId, date);
                 Reservation newReservation;
+
                 if (existingReservation.isEmpty()) {
                     newReservation = new Reservation();
                     BeanUtils.copyProperties(reservation, newReservation, "reservationId");
@@ -52,8 +54,10 @@ public class RegisterController {
                 } else {
                     newReservation = existingReservation.get();
                 }
+
                 List<Reservation> reservationList = reservationRepository.findAllOpenByDate(date);
                 int reservationIndex = reservationList.indexOf(newReservation);
+
                 if (reservationIndex < dailyCapacity) {
                     return new ReservationStatus(date, reservationIndex + 1);
                 } else {

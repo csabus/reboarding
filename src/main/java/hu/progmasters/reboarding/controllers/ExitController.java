@@ -33,9 +33,11 @@ public class ExitController {
         if (userRepository.findById(userId).isPresent()) {
             LocalDate today = LocalDate.now();
             Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(userId, today);
+
             if (reservation.isPresent()) {
                 reservation.get().setExitTime(LocalDateTime.now());
                 Reservation existingReservation = reservationRepository.getOne(reservation.get().getReservationId());
+
                 BeanUtils.copyProperties(reservation, existingReservation);
                 return reservationRepository.saveAndFlush(existingReservation);
             } else {
