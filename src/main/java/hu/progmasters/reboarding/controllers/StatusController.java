@@ -29,6 +29,14 @@ public class StatusController {
     @Autowired
     private CapacityRepository capacityRepository;
 
+    /**
+     * Determines if the user specified by {@code userId} can enter the office at the given time
+     * @param date the current date
+     * @param userId the {@code long} value used to specify the {@link hu.progmasters.reboarding.models.User}
+     * @return a {@link ReservationStatus} object holding the {@link hu.progmasters.reboarding.Status} value
+     * @throws ReservationNotFoundException if {@code User} does not have a {@link Reservation} for this day
+     * @throws UserNotFoundException if {@code User} is not registered
+     */
     @GetMapping(path = "{date}/{userId}")
     public ReservationStatus get(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                  @PathVariable("userId") Long userId) {

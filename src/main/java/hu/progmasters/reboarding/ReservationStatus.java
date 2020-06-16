@@ -2,6 +2,9 @@ package hu.progmasters.reboarding;
 
 import java.time.LocalDate;
 
+/**
+ * The state of the reservation of a user at the given time
+ */
 public class ReservationStatus {
     private Status status;
     private long index;

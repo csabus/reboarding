@@ -17,23 +17,43 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Gets all registered users.
+     *
+     * @return A {@link List} containing all {@link User} object representations of all registered users.
+     */
     @GetMapping
     public List<User> list() {
         return userRepository.findAll();
     }
 
+    /**
+     * Gets the user specified by given <code>userId<code/>.
+      * @param userId - a <code>long</code> value unique to each {@link User}
+     * @return The <code>User</code> object specified by the <code>userId</code>
+     * @throws UserNotFoundException if no user corresponds to given <code>userId</code> in the database
+     */
     @GetMapping()
     @RequestMapping("{userId}")
     public User get(@PathVariable Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
+    /**
+     * Creates a new {@link User} object and the corresponding record in the database
+     * @param user - The {@code User} object representing the user to register
+     * @return The created {@code User}
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody final User user) {
         return userRepository.saveAndFlush(user);
     }
-
+    /**
+     * Deletes the {@link User} specified by the given {@code userId}
+     * @param userId - a <code>long</code> value unique to each {@link User}
+     * @throws UserNotFoundException if no user corresponds to given <code>userId</code> in the database
+     */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "{userId}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Long userId) {
