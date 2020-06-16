@@ -34,6 +34,11 @@ public class RegisterController {
         return reservationRepository.findAll();
     }
 
+    /**
+     * Creates a new reservation in the data table and returns its status. If the reservation already exists just returns its status.
+     * @param reservation The {@link Reservation} object holding the needed data
+     * @return {@link ReservationStatus} of this reservation
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationStatus create(@RequestBody final Reservation reservation) {
@@ -71,6 +76,13 @@ public class RegisterController {
         }
     }
 
+    /**
+     * Deletes the {@link Reservation} specified by the parameters.
+     * @param date the date of the {@code Reservation}
+     * @param userId the {@code userId} of the {@link hu.progmasters.reboarding.models.User} to whom this {@code Reservation} belongs
+     * @throws ReservationNotFoundException if {@code Reservation} does not exist in corresponding table
+     * @throws UserNotFoundException if the {@code User} does not exist in corresponding table
+     */
     @DeleteMapping(value = "{date}/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,

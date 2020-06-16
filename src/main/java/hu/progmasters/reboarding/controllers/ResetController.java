@@ -20,6 +20,9 @@ public class ResetController {
     @Autowired
     private CapacityRepository capacityRepository;
 
+    /**
+     * Clears all data from tables
+     */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
     public void delete() {
