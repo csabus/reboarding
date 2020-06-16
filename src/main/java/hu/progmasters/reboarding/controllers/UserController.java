@@ -1,6 +1,8 @@
 package hu.progmasters.reboarding.controllers;
 
+import hu.progmasters.reboarding.excpetion.CapacityNotSetException;
 import hu.progmasters.reboarding.excpetion.UserNotFoundException;
+import hu.progmasters.reboarding.models.Capacity;
 import hu.progmasters.reboarding.models.User;
 import hu.progmasters.reboarding.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +21,6 @@ public class UserController {
 
     /**
      * Gets all registered users.
-     *
      * @return A {@link List} containing all {@link User} object representations of all registered users.
      */
     @GetMapping
@@ -28,8 +29,8 @@ public class UserController {
     }
 
     /**
-     * Gets the user specified by given <code>userId<code/>.
-      * @param userId - a <code>long</code> value unique to each {@link User}
+     * Gets the {@link User} specified by this <code>userId<code/>.
+      * @param userId a <code>long</code> value unique to each {@code User}
      * @return The <code>User</code> object specified by the <code>userId</code>
      * @throws UserNotFoundException if no user corresponds to given <code>userId</code> in the database
      */
@@ -41,7 +42,7 @@ public class UserController {
 
     /**
      * Creates a new {@link User} object and the corresponding record in the database
-     * @param user - The {@code User} object representing the user to register
+     * @param user The {@code User} object representing the user to register
      * @return The created {@code User}
      */
     @PostMapping
@@ -63,7 +64,13 @@ public class UserController {
             throw new UserNotFoundException(userId);
         }
     }
-
+    /**
+     * Overwrites a previously registered {@link User}
+     * @param userId represents the {@code User} whose data is to be changed
+     * @param user the new {@code User} object holding the values to be set
+     * @return the updated {@code User}
+     * @throws UserNotFoundException if no registered {@code User} corresponds to the given {@code userId}
+     */
     @RequestMapping(value = "{userId}", method = RequestMethod.PUT)
     public User update(@PathVariable Long userId, @RequestBody User user) {
         Optional<User> existingUser = userRepository.findById(userId);

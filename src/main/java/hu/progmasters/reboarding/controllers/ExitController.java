@@ -25,8 +25,13 @@ public class ExitController {
     private UserRepository userRepository;
 
     /**
-     * @param userId
-     * @return
+     * Sets the {@code exitTime} field of the {@link Reservation} (belonging to this {@code User } at the current date) to the current time.
+     * Returns the updated {@code Reservation}.
+     * Throws an exception if {@code User} or {@code Reservation} not found.
+     * @param userId the {@code long} value specifying this user.
+     * @return the {@code Reservation} updated with the {@code exitTime} timestamp.
+     * @throws ReservationNotFoundException
+     * @throws UserNotFoundException
      */
     @RequestMapping(value = "{userId}", method = RequestMethod.PUT)
     public Reservation update(@PathVariable Long userId) {

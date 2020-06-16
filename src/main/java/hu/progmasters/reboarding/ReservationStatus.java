@@ -3,7 +3,7 @@ package hu.progmasters.reboarding;
 import java.time.LocalDate;
 
 /**
- * The state of the reservation of a user at the given time
+ * The state of the {@code Reservation} of a {@code User} at the given time
  */
 public class ReservationStatus {
     private Status status;

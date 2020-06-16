@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
+/**
+ * Represents the number of employees allowed to be at the office at the same time on a given day.
+ */
 @Entity(name = "capacity")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Capacity {

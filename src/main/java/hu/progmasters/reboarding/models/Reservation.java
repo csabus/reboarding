@@ -6,6 +6,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Represents the reservation of office usage of an employee on a given day
+ */
 @Entity(name = "reservations")
 /*@NamedStoredProcedureQuery(name = "Registration.getState",
         procedureName = "GET_RESERVATION_INDEX", parameters = {
