@@ -35,7 +35,7 @@ public class StatusController {
         if (userRepository.findById(userId).isPresent()) {
             Optional<Reservation> reservation = reservationRepository.findByDateAndUserId(userId, date);
             if (reservation.isPresent()) {
-                List<Reservation> reservationList = reservationRepository.findALlOpenByDate(date);
+                List<Reservation> reservationList = reservationRepository.findAllOpenByDate(date);
                 int reservationIndex = reservationList.indexOf(reservation.get());
                 Capacity capacity = capacityRepository.getOneByDate(date);
                 long dailyCapacity = capacity.getDailyCapacity();

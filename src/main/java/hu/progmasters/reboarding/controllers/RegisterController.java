@@ -52,7 +52,7 @@ public class RegisterController {
                 } else {
                     newReservation = existingReservation.get();
                 }
-                List<Reservation> reservationList = reservationRepository.findALlOpenByDate(date);
+                List<Reservation> reservationList = reservationRepository.findAllOpenByDate(date);
                 int reservationIndex = reservationList.indexOf(newReservation);
                 if (reservationIndex < dailyCapacity) {
                     return new ReservationStatus(date, reservationIndex + 1);
